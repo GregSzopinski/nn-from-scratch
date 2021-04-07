@@ -42,3 +42,11 @@ class Sigmoid(Operation):
         sigmoid_backward = self.output * (1.0 - self.output)
         input_grad = sigmoid_backward * output_grad
         return input_grad
+
+
+class ReLU(Operation):
+    """
+    TODO: implement ReLU
+    """
+
+    pass

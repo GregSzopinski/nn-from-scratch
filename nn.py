@@ -2,12 +2,15 @@ import numpy as np
 
 
 def assert_same_shape(array: np.ndarray, array_grad: np.ndarray):
-    assert array.shape == array_grad.shape, \
-        """
+    assert (
+        array.shape == array_grad.shape
+    ), """
         Two ndarrays should have the same shape;
         instead, first ndarray's shape is {0}
         and second ndarray's shape is {1}.
-        """.format(tuple(array_grad.shape), tuple(array.shape))
+        """.format(
+        tuple(array_grad.shape), tuple(array.shape)
+    )
     return None
 
 
@@ -88,3 +91,67 @@ class ParamOperation(Operation):
         Every subclass of ParamOperation must implement _param_grad.
         """
         raise NotImplementedError()
+
+
+class WeightMultiply(ParamOperation):
+    """
+    Weight multiplication operation for a neural network.
+    """
+
+    def __init__(self, W: np.ndarray):
+        """
+        Initialize Operation with self.param = W.
+        """
+        super().__init__(W)
+
+    def _output(self) -> np.ndarray:
+        """
+        Compute output.
+        """
+        return np.dot(self.input_, self.param)
+
+    def _input_grad(self, output_grad: np.ndarray) -> np.ndarray:
+        """
+        Compute input gradient.
+        """
+        return np.dot(output_grad, np.transpose(self.param, (1, 0)))
+
+    def _param_grad(self, output_grad: np.ndarray) -> np.ndarray:
+        """
+        Compute parameter gradient.
+        """
+        return np.dot(np.transpose(self.input_, (1, 0)), output_grad)
+
+
+class BiasAdd(ParamOperation):
+    """
+    Compute bias addition.
+    """
+
+    def __init__(self, B: np.ndarray):
+        """
+        Initialize Operation with self.param = B.
+        Check appropriate shape.
+        """
+        assert B.shape[0] == 1
+
+        super().__init__(B)
+
+    def _output(self) -> np.ndarray:
+        """
+        Compute output.
+        """
+        return self.input_ + self.param
+
+    def _input_grad(self, output_grad: np.ndarray) -> np.ndarray:
+        """
+        Compute input gradient.
+        """
+        return np.ones_like(self.input_) * output_grad
+
+    def _param_grad(self, output_grad: np.ndarray) -> np.ndarray:
+        """
+        Compute parameter gradient.
+        """
+        param_grad = np.ones_like(self.param) * output_grad
+        return np.sum(param_grad, axis=0).reshape(1, param_grad.shape[1])
