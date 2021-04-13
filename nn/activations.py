@@ -1,5 +1,5 @@
 import numpy as np
-from nn import Operation, ParamOperation
+from nn.operations import Operation
 
 
 class Linear(Operation):
@@ -46,7 +46,17 @@ class Sigmoid(Operation):
 
 class ReLU(Operation):
     """
-    TODO: implement ReLU
+    Rectified Linear Unit activation function
     """
 
-    pass
+    def __init__(self) -> None:
+        super.__init__()
+
+    def _output(self) -> np.ndarray:
+        return np.max(self.input_, 0)
+
+    def _input_grad(self, output_grad: np.ndarray) -> np.ndarray:
+        """Compute input gradient"""
+        relu_backward = self.output >= 0
+        input_grad = relu_backward * output_grad
+        return input_grad
