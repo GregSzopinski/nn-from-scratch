@@ -63,9 +63,10 @@ class ReLU(Operation):
 
 
 class Tanh(Operation):
-    '''
+    """
     Hyperbolic tangent activation function
-    '''
+    """
+
     def __init__(self) -> None:
         super().__init__()
 

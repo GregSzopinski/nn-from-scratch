@@ -9,8 +9,7 @@ class Layer(object):
     A "layer" of neurons in a neural network.
     """
 
-    def __init__(self,
-                 neurons: int):
+    def __init__(self, neurons: int):
         """
         The number of "neurons" roughly corresponds to the "breadth" of the layer
         """
@@ -86,9 +85,7 @@ class Dense(Layer):
     A fully connected layer which inherits from "Layer"
     """
 
-    def __init__(self,
-                 neurons: int,
-                 activation: Operation = Sigmoid()):
+    def __init__(self, neurons: int, activation: Operation = Sigmoid()):
         """
         Requires an activation function upon initialization
         """
@@ -110,8 +107,10 @@ class Dense(Layer):
         # bias
         self.params.append(np.random.randn(1, self.neurons))
 
-        self.operations = [WeightMultiply(self.params[0]),
-                           BiasAdd(self.params[1]),
-                           self.activation]
+        self.operations = [
+            WeightMultiply(self.params[0]),
+            BiasAdd(self.params[1]),
+            self.activation,
+        ]
 
         return None
