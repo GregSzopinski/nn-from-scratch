@@ -60,3 +60,18 @@ class ReLU(Operation):
         relu_backward = self.output >= 0
         input_grad = relu_backward * output_grad
         return input_grad
+
+
+class Tanh(Operation):
+    '''
+    Hyperbolic tangent activation function
+    '''
+    def __init__(self) -> None:
+        super().__init__()
+
+    def _output(self, inference: bool) -> ndarray:
+        return np.tanh(self.input_)
+
+    def _input_grad(self, output_grad: ndarray) -> ndarray:
+
+        return output_grad * (1 - self.output * self.output)
