@@ -1,6 +1,6 @@
 import numpy as np
 
-from nn import assert_same_shape
+from nn.utils import assert_same_shape
 
 
 class Loss(object):
